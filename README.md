@@ -1,4 +1,6 @@
-~ this repo just add post to gobuster dir via -X flag , it is really sucks implementation as i suck as developer and no idea about go ~ 🥺
+DISCARD version v3.1 include much more
+
+~~ this repo just add post to gobuster dir via -X flag , it is really sucks implementation as i suck as developer and no idea about go ~~ 
 
 # Gobuster v3.0.1 (OJ Reeves @TheColonial)
 
