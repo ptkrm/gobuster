@@ -36,6 +36,10 @@ func (d *GobusterDir) get(url string) (*int, *int64, error) {
 	return d.http.Get(url, "", d.options.Cookies)
 }
 
+func (d *GobusterDir) post(url string) (*int, *int64, error) {
+	return d.http.Post(url, "", d.options.Cookies, nil)
+}
+
 // NewGobusterDir creates a new initialized GobusterDir
 func NewGobusterDir(cont context.Context, globalopts *libgobuster.Options, opts *OptionsDir) (*GobusterDir, error) {
 	if globalopts == nil {
@@ -114,7 +118,17 @@ func (d *GobusterDir) Run(word string) ([]libgobuster.Result, error) {
 
 	// Try the DIR first
 	url := fmt.Sprintf("%s%s%s", d.options.URL, word, suffix)
-	dirResp, dirSize, err := d.get(url)
+	
+	var dirResp *int
+	var dirSize *int64
+	var err error
+
+	if d.options.UsePost {
+		dirResp, dirSize, err = d.post(url)
+	} else {
+		dirResp, dirSize, err = d.get(url)
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -309,6 +323,12 @@ func (d *GobusterDir) GetConfigString() (string, error) {
 
 	if o.UseSlash {
 		if _, err := fmt.Fprintf(tw, "[+] Add Slash:\ttrue\n"); err != nil {
+			return "", err
+		}
+	}
+
+	if o.UsePost {
+		if _, err := fmt.Fprintf(tw, "[+] Use Post:\ttrue\n"); err != nil {
 			return "", err
 		}
 	}

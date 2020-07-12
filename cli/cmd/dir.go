@@ -99,6 +99,11 @@ func parseDirOptions() (*libgobuster.Options, *gobusterdir.OptionsDir, error) {
 		return nil, nil, fmt.Errorf("invalid value for addslash: %v", err)
 	}
 
+	plugin.UsePost, err = cmdDir.Flags().GetBool("usepost")
+	if err != nil {
+		return nil, nil, fmt.Errorf("invalid value for usePost: %v", err)
+	}
+
 	plugin.Expanded, err = cmdDir.Flags().GetBool("expanded")
 	if err != nil {
 		return nil, nil, fmt.Errorf("invalid value for expanded: %v", err)
@@ -132,13 +137,14 @@ func init() {
 	if err := addCommonHTTPOptions(cmdDir); err != nil {
 		log.Fatalf("%v", err)
 	}
-	cmdDir.Flags().StringP("statuscodes", "s", "200,204,301,302,307,401,403", "Positive status codes (will be overwritten with statuscodesblacklist if set)")
+	cmdDir.Flags().StringP("statuscodes", "s", "200,204,301,302,307,400,401,403", "Positive status codes (will be overwritten with statuscodesblacklist if set)")
 	cmdDir.Flags().StringP("statuscodesblacklist", "b", "", "Negative status codes (will override statuscodes if set)")
 	cmdDir.Flags().StringP("extensions", "x", "", "File extension(s) to search for")
 	cmdDir.Flags().BoolP("expanded", "e", false, "Expanded mode, print full URLs")
 	cmdDir.Flags().BoolP("nostatus", "n", false, "Don't print status codes")
 	cmdDir.Flags().BoolP("includelength", "l", false, "Include the length of the body in the output")
 	cmdDir.Flags().BoolP("addslash", "f", false, "Append / to each request")
+	cmdDir.Flags().BoolP("usepost", "X", false, "User POST Verb")
 	cmdDir.Flags().BoolP("wildcard", "", false, "Force continued operation when wildcard found")
 
 	cmdDir.PersistentPreRun = func(cmd *cobra.Command, args []string) {
